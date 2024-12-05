@@ -1,54 +1,89 @@
 import numpy as np
+from numpy._core.defchararray import count
 
 rules = np.loadtxt('inputA.txt', delimiter='|', dtype=int)
-rules = rules[rules[:,1].argsort()]
+rules = rules[rules[:,0].argsort()]
 #print(rules)
 
+# REDONE the not PSYCHOPATH way
 rulist = {}
-b_sel = rules[0][1]
+a_prev = rules[0][0]
 grouped = []
-for a,b in rules:
-    if b == b_sel:
-        grouped.append(a)
+for a, b in rules:
+    if a == a_prev:
+        grouped.append(b)
     else:
-        rulist[b_sel] = list(np.sort(grouped))
-        b_sel = b
-        grouped = [a]
+        rulist[a_prev] = list(np.sort(grouped))
+        a_prev = a
+        grouped = [b]
 
-# print(rulist[18])
-# print([len(rulist[k][1]) for k in range(len(rulist))])
-# print(len(rulist))
-# exit()
+#for k in rulist.keys():
+#    print(k, rulist[k])
+#exit()
 
-def part2(update_list, rulist):
-    corr_list = []
-    for el in update_list:
+
+def check_rules(update_list, rulist):
+
+    for i, a in enumerate(update_list):
+        if a not in rulist.keys():
+            continue
+
+        rule = rulist[a]
+        for j, b in enumerate(update_list[:i]):
+            if b in rule:
+                return False
+
+    return True
+
+
+def correct_list(update_list, rulist):
+    # a b c d
+    # if rule c | a 
+    # b c a d
+    # I biliv
+
+    for i, el in enumerate(update_list):
         if el not in rulist.keys():
-            corr_list.append(el)
-        
-        
-        if el not in rulist[update_list]:
-            corr_list.append(el)
+            continue
+
+        for j, el2 in enumerate(update_list[:i]):
+            
+            if el2 in rulist[el]:
+                #print(el, rulist[el])
+                #print(update_list)
+                update_list.pop(j)
+                update_list.insert(i, el2)
+                #print(update_list)
+                break
+
+    return update_list
+            
 
 count = 0
+count2 = 0
 with open('inputB.txt', 'r') as f:
     updates = f.readlines()
     for update in updates:
-        flag = True
+
         update_list = [int(el) for el in update.split(',')]
-        #print(update_list)
-        for i,a in enumerate(update_list):
-            if flag == False: continue
-            if a not in rulist.keys(): continue
-            rule = rulist[a]
-            for j,b in enumerate(update_list[i+1:]):
-                if b in rule:
-                    flag = False
-                    break
-        if flag == True:
+
+        follows_rules = check_rules(update_list, rulist)
+
+        if follows_rules:
             count += update_list[int(np.floor(len(update_list)/2))]
         else:
-            part2(update_list, rulist)
-print(count)
+            follows_rules = False
+            kk = 0 
+            while follows_rules == False:
+                kk += 1
+                corr_list = correct_list(update_list, rulist)
+                follows_rules = check_rules(update_list, rulist)
+            print(kk)
+            
+            #print('-'*40)
+            count2 += corr_list[int(np.floor(len(corr_list)/2))]
 
+
+print(count)
+print(count2)
                 
