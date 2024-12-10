@@ -86,4 +86,4 @@ with open('inputB.txt', 'r') as f:
 
 print(count)
 print(count2)
-                
+
