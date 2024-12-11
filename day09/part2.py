@@ -16,7 +16,7 @@ def findFirst(arr):
         if el == '.':
             return i
 
-data = str(np.loadtxt('test.txt', dtype=str))
+data = str(np.loadtxt('input.txt', dtype=str))
 blocks = []
 id = 0
 for i, c in enumerate(data):
@@ -25,13 +25,14 @@ for i, c in enumerate(data):
         id += 1
     else:
         blocks.extend(['.']*int(c))
-print(blocks)
 
+# print(blocks)
 #print(len(blocks))
 
 file_length = 0
 val = blocks[-1]
 for i, el in reversed(list(enumerate(blocks))):
+    print(i)
     if el == '.':
         continue
     else:
@@ -40,24 +41,29 @@ for i, el in reversed(list(enumerate(blocks))):
             continue
         else:
             file_length += 1
-            # insert cycle here(?)
-            i_first = findFirst(blocks)
-            dot_length = 0
-            for j, el2 in list(enumerate(blocks))[i_first:]:
-                if el2 == '.':
-                    dot_length += 1
-                else:
+            # insert cycle here
+            for l in range(len(blocks)):
+                i_first = l + findFirst(blocks[l:])
+                dot_length = 0
+                for j, el2 in list(enumerate(blocks))[i_first:]:
+                    if el2 == '.':
+                        dot_length += 1
+                    else:
+                        break
+                # print(f"dots: {dot_length}")
+                # print(f"file: {file_length}")
+                if dot_length >= file_length and i > i_first:
+                    # do the swap
+                    print(f"swapping file of {file_length} in {dot_length} dots")
+                    for k in range(file_length):
+                        blocks = swap(i + k, i_first + k, blocks)
+                        #print("swapping")
+                    #print(blocks)
                     break
-            print(f"dots: {dot_length}")
-            print(f"file: {file_length}")
-            if dot_length >= file_length:
-                # do the swap
-                for k in range(file_length):
-                    blocks = swap(i + k, i_first + k, blocks)
-                    print("swapping")
-                print(blocks)
+                else:
+                    # move to next dots
+                    continue
             file_length = 0
-    
     
 print(blocks)
 
