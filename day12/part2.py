@@ -1,29 +1,94 @@
 import numpy as np
 
-def partialPerimeter(i, j, data):
+def corners(i, j, data):
+    i_max = len(data) - 1
+    j_max = len(data[i]) - 1
     plant = data[i][j]
-    count = 0
-    if (i > 0 and data[i-1][j] != plant) or i == 0:
-        count += 1
-    if (j < len(data[i]) - 1 and data[i][j+1] != plant) or j == len(data[i]) - 1:
-        count += 1
-    if (i < len(data) - 1 and data[i+1][j] != plant) or i == len(data) - 1:
-        count += 1
-    if (j > 0 and data[i][j-1] != plant) or j == 0:
-        count += 1
-    return count
+    plant_corners = set()
+    if i > 0: north = data[i-1][j]
+    if j < j_max: east = data[i][j+1]
+    if i < i_max: south = data[i+1][j]
+    if j > 0: west = data[i][j-1]
+
+    # NW corner
+    if i > 0 and j > 0:
+        if north == plant and west == plant:
+            if data[i-1][j-1] != plant:
+                plant_corners.add((i, j))
+        elif north != plant and west != plant:
+            plant_corners.add((i, j))
+    elif i == 0 and j > 0:
+        if west != plant:
+            plant_corners.add((i, j))
+    elif j == 0 and i > 0:
+        if north != plant:
+            plant_corners.add((i, j))
+    else:
+        plant_corners.add((i, j))
+    
+    # NE corner
+    if i > 0 and j < j_max:
+        if north == plant and east == plant:
+            if data[i-1][j+1] != plant:
+                plant_corners.add((i, j+1))
+        elif north != plant and east != plant:
+            plant_corners.add((i, j+1))
+    elif i == 0 and j < j_max:
+        if east != plant:
+            plant_corners.add((i, j+1))
+    elif j == j_max and i > 0:
+        if north != plant:
+            plant_corners.add((i, j+1))
+    else:
+        plant_corners.add((i, j+1))
+    
+    # SE corner
+    if i < i_max and j < j_max:
+        if south == plant and east == plant:
+            if data[i+1][j+1] != plant:
+                plant_corners.add((i+1, j+1))
+        elif south != plant and east != plant:
+            plant_corners.add((i+1, j+1))
+    elif i == i_max and j < j_max:
+        if east != plant:
+            plant_corners.add((i+1, j+1))
+    elif j == j_max and i < i_max:
+        if south != plant:
+            plant_corners.add((i+1, j+1))
+    else:
+        plant_corners.add((i+1, j+1))
+    
+    # SW corner
+    if i < i_max and j > 0:
+        if south == plant and west == plant:
+            if data[i+1][j-1] != plant:
+                plant_corners.add((i+1, j))
+        elif south != plant and west != plant:
+            plant_corners.add((i+1, j))
+    elif i == i_max and j > 0:
+        if west != plant:
+            plant_corners.add((i+1, j))
+    elif j == 0 and i < i_max:
+        if south != plant:
+            plant_corners.add((i+1, j))
+    else:
+        plant_corners.add((i+1, j))
+
+    return plant_corners
+
 
 def regionCost(data, region):
-    per = 0
+    n_sides = 0
     area = 0
+    region_corners = set()
     for plantPos in region:
-        # calculate number of sides instead of perimeter
-        # print(plantPos, end=' ')
-        # partial_per = partialPerimeter(plantPos[0], plantPos[1], data)
-        # print(partial_per)
-        # per += partial_per
+        # calculate number of corners instead of perimeter
+        plant_corners = corners(plantPos[0], plantPos[1], data)
+        region_corners.update(plant_corners)
         area += 1
-    return area, per
+    # print(region_corners)
+    n_sides = len(region_corners)
+    return area, n_sides
 
 def move(i, j, data, region):
     plant = data[i][j]
@@ -44,7 +109,7 @@ def move(i, j, data, region):
     return region
 
 
-data = np.loadtxt('input.txt', dtype=str)
+data = np.loadtxt('test2.txt', dtype=str)
 # print(partialPerimeter(1, 8, data))
 
 visited = set()
@@ -58,8 +123,8 @@ for i in range(len(data)):
             region = move(i, j, data, region)
             visited.update(region)
 
-            area, sides = regionCost(data, region)
-            cost += sides*area
-            # print(area, per)
+            area, n_sides = regionCost(data, region)
+            cost += n_sides*area
+            # print(area, n_sides)
 print(cost)
 # print(visited)
