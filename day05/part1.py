@@ -7,7 +7,7 @@ rules = rules[rules[:,1].argsort()]
 rulist = {}
 b_sel = rules[0][1]
 grouped = []
-for a,b in rules:
+for a, b in rules:
     if b == b_sel:
         grouped.append(a)
     else:
