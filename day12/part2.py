@@ -14,65 +14,65 @@ def corners(i, j, data):
     if i > 0 and j > 0:
         if north == plant and west == plant:
             if data[i-1][j-1] != plant:
-                plant_corners.add((i, j))
+                plant_corners.add((i, j, 'NW'))
         elif north != plant and west != plant:
-            plant_corners.add((i, j))
+            plant_corners.add((i, j, 'NW'))
     elif i == 0 and j > 0:
         if west != plant:
-            plant_corners.add((i, j))
+            plant_corners.add((i, j, 'NW'))
     elif j == 0 and i > 0:
         if north != plant:
-            plant_corners.add((i, j))
+            plant_corners.add((i, j, 'NW'))
     else:
-        plant_corners.add((i, j))
+        plant_corners.add((i, j, 'NW'))
     
     # NE corner
     if i > 0 and j < j_max:
         if north == plant and east == plant:
             if data[i-1][j+1] != plant:
-                plant_corners.add((i, j+1))
+                plant_corners.add((i, j+1, 'NE'))
         elif north != plant and east != plant:
-            plant_corners.add((i, j+1))
+            plant_corners.add((i, j+1, 'NE'))
     elif i == 0 and j < j_max:
         if east != plant:
-            plant_corners.add((i, j+1))
+            plant_corners.add((i, j+1, 'NE'))
     elif j == j_max and i > 0:
         if north != plant:
-            plant_corners.add((i, j+1))
+            plant_corners.add((i, j+1, 'NE'))
     else:
-        plant_corners.add((i, j+1))
+        plant_corners.add((i, j+1, 'NE'))
     
     # SE corner
     if i < i_max and j < j_max:
         if south == plant and east == plant:
             if data[i+1][j+1] != plant:
-                plant_corners.add((i+1, j+1))
+                plant_corners.add((i+1, j+1, 'SE'))
         elif south != plant and east != plant:
-            plant_corners.add((i+1, j+1))
+            plant_corners.add((i+1, j+1, 'SE'))
     elif i == i_max and j < j_max:
         if east != plant:
-            plant_corners.add((i+1, j+1))
+            plant_corners.add((i+1, j+1, 'SE'))
     elif j == j_max and i < i_max:
         if south != plant:
-            plant_corners.add((i+1, j+1))
+            plant_corners.add((i+1, j+1, 'SE'))
     else:
-        plant_corners.add((i+1, j+1))
+        plant_corners.add((i+1, j+1, 'SE'))
     
     # SW corner
     if i < i_max and j > 0:
         if south == plant and west == plant:
             if data[i+1][j-1] != plant:
-                plant_corners.add((i+1, j))
+                plant_corners.add((i+1, j, 'SW'))
         elif south != plant and west != plant:
-            plant_corners.add((i+1, j))
+            plant_corners.add((i+1, j, 'SW'))
     elif i == i_max and j > 0:
         if west != plant:
-            plant_corners.add((i+1, j))
+            plant_corners.add((i+1, j, 'SW'))
     elif j == 0 and i < i_max:
         if south != plant:
-            plant_corners.add((i+1, j))
+            plant_corners.add((i+1, j, 'SW'))
     else:
-        plant_corners.add((i+1, j))
+        plant_corners.add((i+1, j, 'SW'))
 
     return plant_corners
 
@@ -109,7 +109,7 @@ def move(i, j, data, region):
     return region
 
 
-data = np.loadtxt('test2.txt', dtype=str)
+data = np.loadtxt('input.txt', dtype=str)
 # print(partialPerimeter(1, 8, data))
 
 visited = set()
@@ -125,6 +125,6 @@ for i in range(len(data)):
 
             area, n_sides = regionCost(data, region)
             cost += n_sides*area
-            # print(area, n_sides)
+            print(area, n_sides)
 print(cost)
 # print(visited)
