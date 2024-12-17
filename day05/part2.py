@@ -1,6 +1,12 @@
 import numpy as np
 import sys
 
+def swap(i, j, arr):
+    temp = arr[i]
+    arr[i] = arr[j]
+    arr[j] = temp
+    return arr
+
 rules = np.loadtxt(f'{sys.argv[1]}A.txt', delimiter='|', dtype=int)
 rules = rules[rules[:,1].argsort()]
 # print(rules)
@@ -34,6 +40,17 @@ with open(f'{sys.argv[1]}B.txt', 'r') as f:
                     break
 
         if flag == False:
+            # print(f"Wrong: {update_list}")
+            for k in range(10):
+                for i, a in enumerate(update_list):
+                    if a not in rulist.keys(): continue
+                    else:
+                        rule = rulist[a]
+                        for j, b in enumerate(update_list[i+1:]):
+                            if b in rule:
+                                update_list = swap(i, i + 1 + j, update_list)
+                                # print(f"swap {a, b}")
+            # print(f"Corrected: {update_list}")
             count += update_list[int(np.floor(len(update_list)/2))]
 
 print(count)
