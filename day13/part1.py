@@ -61,9 +61,10 @@ with open(f'{sys.argv[1]}.txt', 'r') as f:
         P = Vector(Px, Py)
         print(P)
 
-        # curr_cost = move(dA, dB, P)
+        curr_cost = move(dA, dB, P)
         # # print(curr_cost)
-        # cost += curr_cost
+        cost += curr_cost
+        
     print(cost)        
 
 
