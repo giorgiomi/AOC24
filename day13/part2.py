@@ -55,10 +55,3 @@ with open(f'{sys.argv[1]}.txt', 'r') as f:
             cost += 3 * m + n
 
     print(int(cost))        
-
-
-
-
-        
-        
-
